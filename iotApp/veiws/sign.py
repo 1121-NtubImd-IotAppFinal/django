@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from ..models import card, image, sign, notify
-from iotAppMidproject import settings
+from iotAppFinalproject import settings
 from ..module import encrypt
 
 @csrf_exempt
