@@ -1,4 +1,4 @@
-from iotAppMidproject import settings
+from iotAppFinalproject import settings
 
 
 def username(request):
