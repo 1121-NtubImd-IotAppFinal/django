@@ -8,7 +8,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 from ..module import mqtt
 from ..module.linebotTemplate import *
-from ..models import student,notify,card
+from ..models import student,notify,card,card_captcha
 
 
 line_bot_api = LineBotApi('R6/InwkZD1rg5brgHLv7bAjIvhpsDzBViLDwFZyPi7fpvQr2vTdqFBsQW0PS6twbAHLy450mr08rudWYTx6UDpE9DNW98O5XzL22LlNKjwxEy16k1BYrE9wqra6Ft4xRoHqcTx/uG97tljx8nuPK1gdB04t89/1O/w1cDnyilFU=')
@@ -62,13 +62,23 @@ def handle_message(event):
                 template_message = card_send()
                 line_bot_api.reply_message(event.reply_token, template_message)
         elif(message_text == "@新增卡片"):
-            mqtt.send_mqtt_message(student_id , "card/register")
-            txt = "請在十秒內攜帶您的卡片前往簽到退設備\n"
-            txt += "看到亮橘燈後請靠卡即可進行卡片綁定\n\n"
-            txt += "注意: \n1.已經註冊的卡片不得重複綁定."
-            txt += "\n2.最多只能綁定10張卡片."
-            txt += "\n3.未亮橘燈請重新操作"
+            card_count = card.objects.filter(student=student_id).count()
+            if card_count > 10:
+                txt = "綁定卡片的數量已達上限 !"
+            else:
+                captchaReq= card_captcha.createCode(student_id)
+                mqtt.send_mqtt_message(student_id , "card/register")
+                print(captchaReq)
+                txt = "請備妥您的卡片\n並前往簽到退設備\n"
+                txt += "將小螢幕上顯示的驗證碼輸入進此聊天室\n\n"
+                txt += f"注意:\n1.驗證碼過期時間:\n {captchaReq[1]}."
+                txt += "\n2.已經註冊的卡片不得重複綁定."
+                txt += "\n3.最多只能綁定10張卡片."
+                txt += "\n4.裝置未顯示驗證碼或過期請重新操作."
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=txt))
+        elif("#" in message_text):
+            checkReq = card_captcha.checkCode(student_id, str(message_text).strip())
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=checkReq))
         elif("@刪除卡片" in message_text):
             card_id = str(message_text).replace("@刪除卡片","")
             req = card.deleteStudentCard(card_id)
