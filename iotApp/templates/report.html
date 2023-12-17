@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>學習進度回報</title>
+    <style>
+        button{
+            width: 100%;
+            font-size: 25px;
+        }
+        input{
+            font-size: 14px;
+        }
+        .btn {
+            width: 80%;
+            padding: 2rem;
+        }
+        h2 {
+            text-align: center;
+        }
+        .content{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 5%;
+        }
+        .data {
+            margin: 20px 0;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px 20px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background-color: #ffffff;
+            font-size: 16px;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h2>
+            <p style="font-size: 22px;">商業智慧研究中心</p>
+            <p style="font-size: 18px;">新生學習進度回報表單</p>
+        </h2>
+        <form action="/report" method="post">      
+                <label>編號：</label>
+                <input type="text" name="sign_id" value="{{ token }}" required readonly><br><br>
+                <label>人員：{{ student }}</label><br><br>
+                <label>日期：{{ date }}</label><br><br>
+                <label>簽到時間：{{ in }}</label><br><br>
+                <label>簽退時間：{{ out }}</label><br><br>
+
+                <label for="內容">回報內容：</label><br><br>
+                
+                {% if affair %}
+                    <!-- 如果 affair 为真（非空），显示下面的内容 -->
+                    <div style="border: solid rgb(96, 96, 96) 1px; padding: 0.5rem;">{{ affair }}</div>
+                {% else %}
+                    <textarea name="reportText" rows="4" cols="50" required></textarea><br><br>
+                    <button type="submit">提交</button>   
+                {% endif %}
+        </form>
+    </div>
+</body>
+</html>
+<script>
+    var error = "{{ error }}";
+    var success = "{{ success }}"
+    if(error){
+        alert(error);
+    }else if(success){
+        alert(success);
+    }
+</script>

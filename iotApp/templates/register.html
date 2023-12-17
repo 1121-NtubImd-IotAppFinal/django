@@ -1,0 +1,132 @@
+{% load static %}
+
+<head>
+    <script src="{% static 'model/jquery-3.6.4.min.js' %}"></script>
+    <script src="https://static.line-scdn.net/liff/edge/versions/2.3.0/sdk.js"></script>
+    <style>
+        button{
+            width: 100%;
+            height: 6rem;
+            font-size: 40px;
+        }
+        input{
+            height: 6rem;
+            font-size: 40px;
+        }
+        h2 {
+            width: 80%;
+        }
+        .btn {
+            width: 80%;
+            padding: 2rem;
+        }
+        .content{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 15%;
+        }
+        .data {
+            margin: 20px 0;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="content">
+        <div class="data">
+            <h2>請輸入您的學號</h2>
+            <input id="std_id" type="text">
+        </div>
+        <div class="data">
+            <h2>請輸入您的姓名</h2>
+            <input id="name" type="text">
+        </div> 
+        <div class="btn">
+            <button id="submit" onclick="submit()">提交</button>
+            <span id="label" hidden style="font-size: 40px; color: red;">處理中請稍後.....</span>
+        </div>
+    </div>
+
+</body>
+<script>
+    const std_id = document.getElementById("std_id")
+    const name = document.getElementById("name")
+    const label = document.getElementById("label")
+    const btn = document.getElementById("submit")
+
+    function upload(data){
+        std_id.disabled = true;
+        name.disabled = true;
+        btn.hidden = true;
+        label.hidden = false;
+        
+        fetch("{% url 'register' %}", {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+        })
+        .then(response => response.json())
+        .then(Rdata => {
+        std_id.disabled = false;
+        name.disabled = false;
+        btn.hidden = false;
+        label.hidden = true;
+
+        if (Rdata.message === "註冊成功") {
+            liff.sendMessages([
+            {
+                type: "text",
+                text: "完成註冊",
+            },
+            ]).then(() => {
+                alert("恭喜您完成註冊 !");
+                liff.closeWindow();
+            }).catch((err) => {
+                alert(err);
+            });
+        } else {
+                alert(Rdata.message);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+    function submit() {
+        liff.getProfile()
+        .then(profile => {
+            const userId = profile.userId;
+            if(!userId || !std_id.value || !name.value){
+                alert("資料未填寫完整");
+            } else {
+                const data = {
+                    "line_uid":userId,
+                    "std_id":std_id.value,
+                    "name":name.value
+                }
+                upload(data);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        
+    }
+    function initializeLiff(myLiffId) {
+        liff.init({
+            liffId: myLiffId,
+            withLoginOnExternalBrowser: true
+        }).catch(error => {
+            alert("無法讀取個人資訊，請使用LINE開啟本網站")
+            liff.closeWindow();
+        });;
+
+    }
+    $(document).ready(function () {
+        initializeLiff('2001313904-VxRBj3MX');
+    });
+</script>

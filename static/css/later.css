@@ -1,0 +1,84 @@
+    /* 容器樣式 */
+    .container {
+        margin: 20px;
+        padding: 20px;
+        background-color: #f7f7f7;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 標題樣式 */
+    h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #007bff;
+    }
+
+    /* 表單樣式 */
+    form {
+        margin-bottom: 20px;
+    }
+
+    form label {
+        font-weight: bold;
+    }
+
+    form input[type="date"], form select {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+    }
+
+    form button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    /* 表格樣式 */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    /* 分頁樣式 */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .step-links a, .step-links a.current-page {
+        display: inline-block;
+        padding: 10px;
+        text-align: center;
+        background-color: #e0e0e0;
+        border: 1px solid #ccc;
+        margin-right: 5px;
+        text-decoration: none;
+    }
+
+    .step-links a.current-page {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .step-links a.disabled {
+        background-color: #ccc;
+        color: #888;
+        cursor: not-allowed;
+    }

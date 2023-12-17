@@ -1,0 +1,38 @@
+    /* 容器樣式 */
+    .container {
+        margin: 20px;
+        padding: 20px;
+        background-color: #f7f7f7;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 標題樣式 */
+    h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #007bff;
+    }
+
+    /* 表格樣式 */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    th {
+        background-color: #007bff;
+        color: #fff;
+    }

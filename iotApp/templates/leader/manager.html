@@ -1,0 +1,57 @@
+{% extends 'leader/base.html' %}
+{% block content %}
+{% load static %}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/manager.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>時數相差</h1>
+    
+        <table>
+            <thead>
+                <tr>
+                    <th>學號姓名</th>
+                    <th>註冊日期</th>
+                    <th>時數總計</th>
+                    <th>應到達時數</th>
+                    <th>欠缺時數</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td> {{student.student_id  }}{{ student.name }}</td>
+                        <td> {{ student.create_time}}</td>
+                        <td> {{ student.Y }}</td>
+                        <td> {{ student.X }}</td>
+                        <td> {{ student.missing_hours }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            <span class="step-links">
+            {% if students_on_page.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ students_on_page.previous_page_number }}">previous</a>
+            {% else %}
+                <a class="disabled">&laquo; first</a>
+                <a class="disabled">previous</a>
+            {% endif %}
+                
+            <span class="current-page">{{ students_on_page.number }} of {{ students_on_page.paginator.num_pages }}</span>        
+            {% if students_on_page.has_next %}
+                <a href="?page={{ students_on_page.next_page_number }}">next</a>
+                <a href="?page={{ students_on_page.paginator.num_pages }}">last &raquo;</a>
+            {% else %}
+                <a class="disabled">next</a>
+                <a class="disabled">last &raquo;</a>
+            {% endif %}
+            </span>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}
