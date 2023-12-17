@@ -1,3 +1,4 @@
+import secrets
 from django.db import models
 import datetime
 import requests
@@ -189,3 +190,32 @@ class notify(models.Model):
 class setting(models.Model):
     hour_norm = models.IntegerField()
     late_time = models.TimeField()
+
+class card_captcha(models.Model):
+    captcha_sno = models.AutoField(primary_key=True)
+    code_value = models.CharField(max_length=5, unique=True, editable=False)  # 添加 editable=False 避免手動編輯
+    student = models.ForeignKey(student, on_delete=models.CASCADE)
+    expiry_time = models.DateTimeField()
+    create_time = models.DateTimeField()
+
+    @staticmethod
+    def createCode(student_id):
+        now = datetime.datetime.now()
+        expiry = now + datetime.timedelta(seconds=30)
+        code_value = "#"+secrets.token_hex(3).upper()[:4]
+        card_captcha_instance = card_captcha(student_id=student_id, code_value=code_value,expiry_time=expiry,create_time=now)
+        card_captcha_instance.save()
+        return (code_value,expiry.strftime("%Y-%m-%d %H:%M:%S"))
+    
+    @staticmethod
+    def checkCode(student_id, code):
+        now = datetime.datetime.now()
+        latest_card_captcha = card_captcha.objects.filter(student_id=student_id, code_value=code).order_by('-create_time').first()
+        if latest_card_captcha:
+            if latest_card_captcha.expiry_time > now:
+                return "驗證成功"
+            else:
+                return "驗證碼過期"
+        else:
+            return "驗證碼無效"
+        
