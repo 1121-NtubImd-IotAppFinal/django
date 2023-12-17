@@ -1,0 +1,70 @@
+{% extends 'leader/base.html' %}
+{% block content %}
+{% load static %}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/later.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>遲到紀錄</h1>
+        <form method="get">
+            <label for="start_date">開始日期:</label>
+            <input type="date" name="start_date" id="start_date" value="{{ start_date }}">
+            <label for="end_date">結束日期:</label>
+            <input type="date" name="end_date" id="end_date" value="{{ end_date }}">
+            <label for="std">學號姓名:</label>
+            <select name="std" id="name">
+                <option value="all">全部</option>
+                {% for student in students %}
+                    <option value="{{ student.student_id }}" {% if request.GET.std == student.student_id %}selected{% endif %}>
+                        {{ student.student_id }} {{ student.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit">查詢</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>學號姓名</th>
+                    <th>日期</th>
+                    <th>簽到時間</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in late_attendance_records %}
+                    <tr>
+                        <td>{{ record.student.student_id }} {{ record.student.name }}</td>
+                        <td>{{ record.date }}</td>
+                        <td>{{ record.check_in_time }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            <span class="step-links">
+                {% if late_attendance_records.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ late_attendance_records.previous_page_number }}">previous</a>
+                {% else %}
+                    <a class="disabled">&laquo; first</a>
+                    <a class="disabled">previous</a>
+                {% endif %}
+                
+                <span class="current-page">{{ late_attendance_records.number }} of {{ late_attendance_records.paginator.num_pages }}</span>
+                
+                {% if late_attendance_records.has_next %}
+                    <a href="?page={{ late_attendance_records.next_page_number }}">next</a>
+                    <a href="?page={{ late_attendance_records.paginator.num_pages }}">last &raquo;</a>
+                {% else %}
+                    <a class="disabled">next</a>
+                    <a class="disabled">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

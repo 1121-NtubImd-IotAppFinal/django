@@ -1,0 +1,42 @@
+        /* 容器样式 */
+        .container {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    
+        /* 标题样式 */
+        h1 {
+            margin-bottom: 18px;
+            font-size: 24px;
+            color: #007bff;
+        }
+
+        /* 表单容器样式 */
+        .form-container {
+            margin-bottom: 20px;
+        }
+
+        /* 输入字段样式 */
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* 提交按钮样式 */
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* 错误消息样式 */
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
