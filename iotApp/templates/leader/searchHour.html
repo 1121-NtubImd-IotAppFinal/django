@@ -1,0 +1,187 @@
+{% extends 'leader/base.html' %}
+{% block content %}
+{% load static %}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/searchHour.css' %}">
+    <script src="{% static 'js/searchHour.js' %}"></script>
+    
+
+    <style>
+        th,td {
+            text-align: center;
+        }
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 10vh; /* Increase padding for more white space */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+    
+        .modal-content {
+            max-width: 95%; 
+            max-height: 95vh; 
+            margin: 0 auto;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            border-radius: 5px;
+            text-align: center;
+        }
+    
+        .image-preview {
+            max-width: 90%; /* Increased image width */
+            max-height: 80vh; /* Increased image height */
+            display: block;
+            margin: 0 auto;
+            border-radius: 5px;
+        }
+        .image-modal img {
+            max-width: 100%; /* Ensure the image fits within its container */
+            max-height: 100%; /* Ensure the image fits within its container */
+            display: block;
+            margin: 0 auto;
+        }
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 20px;
+            max-width: 80%;
+            background-color: #fff;
+        }
+    
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .image-preview-button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    
+        .image-preview-button:hover {
+            background-color: #258cd1; /* 鼠标悬停时的按钮背景颜色 */
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <h1>刷卡紀錄查詢</h1>
+        <form method="get">
+            <label for="start_date">開始日期:</label>
+            <input type="date" name="start_date" id="start_date" value="{{ start_date }}">
+            <label for="end_date">結束日期:</label>
+            <input type="date" name="end_date" id="end_date" value="{{ end_date }}">
+            <label for="name">學號姓名:</label>
+            <select name="std" id="name">
+                <option value="all">全部</option>
+                {% for student in students %}
+                    <option value="{{ student.student_id }}" {% if request.GET.std == student.student_id %}selected{% endif %}>
+                        {{ student.student_id }} {{ student.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">查詢</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>學號姓名</th>
+                    <th>日期</th>
+                    <th>簽到時間</th>
+                    <th>簽退時間</th>
+                    <th>進度說明</th>
+                    <th>時數</th>
+                    <th>是否遲到</th>
+                    <th>圖片</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                    <tr>
+                        <td>{{ record.student.student_id }} {{ record.student.name }}</td>
+                        <td>{{ record.date }}</td>
+                        <td>{{ record.check_in_time }}</td>
+                        <td>
+                            {% if record.check_out_time %}
+                                {{ record.check_out_time }}
+                            {% else %}
+                            <span style="color: red;">未簽退</span>
+    
+                            {% endif %}
+                        </td>
+                        <td class="custom-width-word-wrap">
+                            {% for student in students %}
+                                {% if student.student_id == record.student.student_id %}
+                                    {{ record.affair }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>{{ record.hours }}</td>
+                        <td>
+                            {% if record.isLate %}
+                                <span style="color: red;">遲到</span>
+                            {% else %}
+                                否
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if images|length > 0 %}
+                                {% for image in images %}
+                                    {% if image.sign_id == record.sign_id %}
+                                        <button style="margin-bottom: 5px;" class="image-preview-button" data-image-url="{{ image.path }}" data-sign-id="{{ image.sign_id }}">查看圖片</button>
+                                        <br>
+                                        {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="pagination">
+            <span class="step-links">
+                {% if records.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ records.previous_page_number }}">previous</a>
+                {% else %}
+                    <a class="disabled">&laquo; first</a>
+                    <a class="disabled">previous</a>
+                {% endif %}
+                
+                <span class="current-page">{{ records.number }} of {{ records.paginator.num_pages }}</span>
+                
+                {% if records.has_next %}
+                    <a href="?page={{ records.next_page_number }}">next</a>
+                    <a href="?page={{ records.paginator.num_pages }}">last &raquo;</a>
+                {% else %}
+                    <a class="disabled">next</a>
+                    <a class="disabled">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

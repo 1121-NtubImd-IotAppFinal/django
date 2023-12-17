@@ -1,0 +1,35 @@
+{% extends 'leader/base.html' %}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/set_time.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>時間設定</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-container">
+            <label for="{{ form.hour_norm.id_for_label }}">最小小時:</label>
+            <input type="number" name="{{ form.hour_norm.name }}" id="{{ form.hour_norm.id_for_label }}" class="form-input" value="{{ form.hour_norm.value }}">
+        </div>
+        <div class="form-container">
+            <label for="{{ form.late_time.id_for_label }}">遲到時間:</label>
+            <input type="time" name="{{ form.late_time.name }}" id="{{ form.late_time.id_for_label }}" class="form-input" value="{{ form.late_time.value }}">
+        </div>
+        <button type="submit" class="btn btn-primary">保存</button>
+    </form>
+    
+    {% if error_message %}
+    <div class="error-message">
+        {{ error_message }}
+    </div>
+    {% endif %}
+
+</body>
+</html>
+{% endblock %}

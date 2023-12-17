@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LINE 訊息綁定</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <style>
+        body {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #close-button {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #close-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ message }}</h1>
+    <button id="close-button">請自行關閉網頁</button>
+</body>
+</html>
+<script>
+    var message = "{{ message }}";
+    alert(message);
+    document.getElementById("close-button").addEventListener("click", function () {
+        window.location.href = "about:blank";
+    });
+</script>
