@@ -1,10 +1,22 @@
 version: '3'
 
 services:
-  db:
+  # Django App
+  djangoapp:
+    image: djangoapp  # 你的 Django 应用程序镜像
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+
+  # MySQL Database
+  mysql:
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: QSFCqgA8em$#B6Q@
       MYSQL_DATABASE: birc
       MYSQL_USER: admin
       MYSQL_PASSWORD: QSFCqgA8em$#B6Q@
+    ports:
+      - "3306:3306"
