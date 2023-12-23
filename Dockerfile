@@ -4,8 +4,8 @@ FROM python:3.8
 # Set the working directory in the container
 WORKDIR /usr/src/django
 
-# Clone the Django project from GitHub
-RUN git clone https://github.com/1121-NtubImd-IotAppFinal/django.git .
+# Copy the local Django project into the container at /usr/src/app
+COPY . /usr/src/django
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
