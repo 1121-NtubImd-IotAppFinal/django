@@ -2,35 +2,23 @@ version: '3'
 
 services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: djangoapp
-    container_name: djangoapp
-    hostname: djangoapp
-    restart: always
+    build: ./web
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/web
+      - .:/web_django
     ports:
-      - "8000:8000"
+      - '8000:8000'
     depends_on:
-      - djangomysql  
-
-  djangomysql:
-    image: djangomysql
-    container_name: djangomysql
-    hostname: djangomysql
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password --mysqlx=0
+      - db
+  db:
+    image: mysql:5.7
     ports:
-      - 3306:3306
-    volumes:
-      - ./db:/var/lib/mysql
+      - '3306:3306'
     environment:
-      - MYSQL_HOST=localhost 
-      - MYSQL_PORT=3306 
-      - MYSQL_DATABASE=birc
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=QSFCqgA8em$#B6Q@
-      - MYSQL_ROOT_PASSWORD=QSFCqgA8em$#B6Q@
+      MYSQL_DATABASE: 'birc'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'QSFCqgA8em$#B6Q@'
+      MYSQL_ROOT_PASSWORD: 'QSFCqgA8em$#B6Q@'
+    restart: always
+    volumes:
+      - ./db_django:/var/lib/mysql
