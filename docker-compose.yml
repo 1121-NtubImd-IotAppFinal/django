@@ -15,9 +15,9 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - mysql  
+      - djangomysql  
 
-  mysql:
+  djangomysql:
     image: djangomysql
     container_name: djangomysql
     hostname: djangomysql
