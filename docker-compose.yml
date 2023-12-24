@@ -9,8 +9,8 @@ services:
     ports:
       - '8000:8000'
     depends_on:
-      - db
-  db:
+      - djangomysql
+  djangomysql:
     image: mysql:5.7
     ports:
       - '3306:3306'
