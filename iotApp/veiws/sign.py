@@ -41,6 +41,17 @@ def report(request):
                                                    ,"affair":sign_instance.affair})
         except: 
             return render(request, 'report.html', {'error': '發生錯誤'})
+        
+@csrf_exempt
+def cardCheck(request):
+    if request.method == 'POST':
+        card_id = request.POST.get('card_id')
+        print(card_id)
+        student = card.getStudentByCardId(card_id)
+        if student == None:
+            return HttpResponse(f'No', status=200, content_type='text/plain')
+        else:
+            return HttpResponse(f'Yes', status=200, content_type='text/plain')
 
 @csrf_exempt
 def image_check(request):
