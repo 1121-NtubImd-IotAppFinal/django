@@ -1,0 +1,7 @@
+django
+mysqlclient
+line-bot-sdk
+django-bootstrap-datepicker-plus
+timeout-decorator
+opencv-python
+paho-mqtt

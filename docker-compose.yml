@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  # Django App
+  djangoapp:
+    image: djangoapp  # 你的 Django 应用程序镜像
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - /path/to/django_docker:/path/in/container
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    restart: always  # 在容器退出時自動重新啟動
+
+  # MySQL Database
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: QSFCqgA8em$#B6Q@
+      MYSQL_DATABASE: birc
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: QSFCqgA8em$#B6Q@
+    ports:
+      - "33066:3306"
+    command: --innodb-log-file-size=50M
+    restart: always  # 在容器退出時自動重新啟動
