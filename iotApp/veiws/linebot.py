@@ -67,8 +67,7 @@ def handle_message(event):
                 txt = "綁定卡片的數量已達上限 !"
             else:
                 captchaReq= card_captcha.createCode(student_id)
-                mqtt.send_mqtt_message(student_id , "card/register")
-                print(captchaReq)
+                mqtt.send_mqtt_message(captchaReq[0] , 'oled/showCode')
                 txt = "請備妥您的卡片\n並前往簽到退設備\n"
                 txt += "將小螢幕上顯示的驗證碼輸入進此聊天室\n\n"
                 txt += f"注意:\n1.驗證碼過期時間:\n {captchaReq[1]}."
