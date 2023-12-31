@@ -136,7 +136,7 @@ class notify(models.Model):
         body = {
             "grant_type": "authorization_code",
             "code": AuthorizeCode,
-            "redirect_uri": "https://birc.leedong.work/notify",
+            "redirect_uri": "https://iotappdjango.leedong.work/notify",
             "client_id": "CN82GQa4zPRv2vaKU8BSr0",
             "client_secret": "SaYaAwYuL6XuAZZUTj5hghCEHlkAS25uDYH4EUvmI6w",
         }
