@@ -2,10 +2,9 @@
 import uuid
 import os
 import datetime
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from ..models import card, image, sign, notify
 from iotAppFinalproject import settings
@@ -61,10 +60,10 @@ def image_check(request):
         uploaded_file = request.FILES.get('file')
         if toekn == "p+8bwe~s_74;`?%nq}#?t7~p7_rr6qe_&###@*ky//}f^!_b=&00852!sr:sz!a":
             if(image_regonition.detect_face(uploaded_file)):
-                return HttpResponse(checkin_Out(card_id), status=200, content_type='text/plain; charset=utf-8')
+                return HttpResponse(checkin_Out(card_id, uploaded_file), status=200, content_type='text/plain; charset=utf-8')
     return HttpResponse(f'error', status=200, content_type='text/plain')
 
-def checkin_Out(card_id):
+def checkin_Out(card_id, uploaded_file):
     student = card.getStudentByCardId(card_id)
     if student == None:
         return None
@@ -90,37 +89,31 @@ def checkin_Out(card_id):
                 notifyMsg += f"https://birc.leedong.work/report?token={signToken}"
         
             notify.lineNotifyMessage(token, notifyMsg)
+        saveImage(uploaded_file, sign_id)
         text = f'{sign_id},{in_Out},{student.student_id},{student.name}'
         return text
         
                
 
 @csrf_exempt
-def saveImage(request):
-    if request.method == 'POST':
-        sign = request.POST.get('number')
-        uploaded_file = request.FILES.get('file')
-        if uploaded_file:                
-            current_date = datetime.datetime.now()
-            year = str(current_date.year)
-            month = str(current_date.month).zfill(2)
-            day = str(current_date.day).zfill(2)
-            
-            # 隨機檔名
-            uuid_str = str(uuid.uuid4())
-            file_extension = os.path.splitext(uploaded_file.name)[1]
-            random_filename = f"{uuid_str}{file_extension}"
+def saveImage(uploaded_file,sign_id):
+    if uploaded_file:                
+        current_date = datetime.datetime.now()
+        year = str(current_date.year)
+        month = str(current_date.month).zfill(2)
+        day = str(current_date.day).zfill(2)
+        
+        # 隨機檔名
+        uuid_str = str(uuid.uuid4())
+        file_extension = os.path.splitext(uploaded_file.name)[1]
+        random_filename = f"{uuid_str}{file_extension}"
 
-            # 存檔
-            upload_path = os.path.join('images', year, month, day, random_filename)
-            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
-            filename = fs.save(upload_path, uploaded_file)
+        # 存檔
+        upload_path = os.path.join('images', year, month, day, random_filename)
+        fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+        filename = fs.save(upload_path, uploaded_file)
 
-            file_path = fs.url(filename)
-            new_student = image(path=file_path, sign_id=int(sign), create_time=current_date)
-            new_student.save()
-            print("File saved at:", file_path)
-
-        return JsonResponse({'message': 'Data received successfully'}, status=200)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
+        file_path = fs.url(filename)
+        new_student = image(path=file_path, sign_id=int(sign_id), create_time=current_date)
+        new_student.save()
+        print("File saved at:", file_path)
