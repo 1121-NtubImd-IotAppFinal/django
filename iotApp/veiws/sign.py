@@ -86,7 +86,7 @@ def checkin_Out(card_id, uploaded_file):
                 notifyMsg += f"時數經計算為：{hours}小時。"
                 notifyMsg += f"==================\n"
                 notifyMsg += f"請至以下連結填寫今日進度\n"
-                notifyMsg += f"https://birc.leedong.work/report?token={signToken}"
+                notifyMsg += f"https://iotappdjango.leedong.work/report?token={signToken}"
         
             notify.lineNotifyMessage(token, notifyMsg)
         saveImage(uploaded_file, sign_id)

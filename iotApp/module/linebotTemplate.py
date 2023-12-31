@@ -132,7 +132,7 @@ def getSignListByStudent(student_id):
                     layout='horizontal',
                     contents=[
                         ButtonComponent(
-                            action=URIAction(label='點擊查看', uri=f'https://birc.leedong.work/report?token={signToken}') 
+                            action=URIAction(label='點擊查看', uri=f'https://iotappdjango.leedong.work/report?token={signToken}') 
                         )
                     ]
                 )
