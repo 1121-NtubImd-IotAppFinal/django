@@ -40,7 +40,16 @@ def report(request):
                                                    ,"affair":sign_instance.affair})
         except: 
             return render(request, 'report.html', {'error': '發生錯誤'})
-        
+
+def getReportUrl(request):
+    if request.method == 'POST':
+        toekn = request.POST.get('token')
+        sign_id = request.POST.get('sign_id')
+        signToken = encrypt.encrypt_string(str(sign_id))
+        return HttpResponse(f'https://iotappdjango.leedong.work/report?token={signToken}', status=200, content_type='text/plain')
+    return HttpResponse(f'error', status=200, content_type='text/plain')
+    
+
 @csrf_exempt
 def cardCheck(request):
     if request.method == 'POST':

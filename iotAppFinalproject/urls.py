@@ -35,6 +35,7 @@ urlpatterns = [
     path('sign', sign.image_check),
     path('report', sign.report),
     path('upload', sign.saveImage),
+    path('reportUrl', sign.getReportUrl),
     path('registerCard', linebot.registerCard),
     path('set_time', set_time.set_time, name='set_time'),
     path('manager', manager.manager, name='manager')
