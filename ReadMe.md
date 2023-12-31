@@ -11,4 +11,5 @@
  pip install timeout-decorator
  pip install opencv-python
  pip install paho-mqtt
+ pip install face_recognition
 ```
