@@ -9,4 +9,5 @@
  pip install django-bootstrap-datepicker-plus
  pip install timeout-decorator
  pip install opencv-python
+ pip install face_recognition
 ```
