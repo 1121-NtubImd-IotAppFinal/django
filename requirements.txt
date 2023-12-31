@@ -5,3 +5,4 @@ django-bootstrap-datepicker-plus
 timeout-decorator
 opencv-python
 paho-mqtt
+face_recognition
