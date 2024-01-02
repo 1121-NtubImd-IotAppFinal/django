@@ -22,7 +22,8 @@ def manager(request):
         student_instance.create_time = student_instance.create_time.date()
         X = get_workdays(student_instance.create_time, current_datetime) * (float(setting_instance.hour_norm) if setting_instance and setting_instance.hour_norm != 0 else default_hour_norm)
         Y = sign.objects.filter(student=student_instance).aggregate(total_hours=Sum('hours'))['total_hours']
-        0 if Y == None else float(Y)
+        X = 0 if X == None else float(X)
+        Y = 0 if Y == None else float(Y)
         missing_hours = f'{(X - Y):.2f}' if (Y<X) else 0
         student_instance.X = f'{X:.2f}'
         student_instance.Y = f'{Y:.2f}'if Y is not None else 0
