@@ -1,21 +1,19 @@
+import os
 import cv2
 import numpy as np
-import face_recognition
 
 def detect_face(uploaded_file):
     image_np = cv2.imdecode(np.frombuffer(uploaded_file.read(), np.uint8), cv2.IMREAD_COLOR)
     if image_np is None:
         print("Error: Unable to read the image.")
         return False
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(current_directory, 'ai_model/haarcascade_frontalface_default.xml')
 
-    # Convert BGR image to RGB (face_recognition uses RGB)
-    rgb_image = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
+    face_detector = cv2.CascadeClassifier(model_path)
+    faces = face_detector.detectMultiScale(image_np)
 
-    # Use face_recognition to find faces in the image
-    face_locations = face_recognition.face_locations(rgb_image)
+    for (x, y, w, h) in faces:
+        cv2.rectangle(image_np, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    return len(faces) > 0
 
-    # Draw bounding boxes on faces
-    for (top, right, bottom, left) in face_locations:
-        cv2.rectangle(image_np, (left, top), (right, bottom), (0, 255, 0), 2)
-
-    return len(face_locations) > 0
