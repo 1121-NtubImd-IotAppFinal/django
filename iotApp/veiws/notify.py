@@ -7,7 +7,7 @@ from ..module.encrypt import *
 
 '''
 使用者訂閱網址：
-https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=CN82GQa4zPRv2vaKU8BSr0&redirect_uri=https://iotappdjango.leedong.work/notify&scope=notify&state=NO_STATE
+https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=CN82GQa4zPRv2vaKU8BSr0&redirect_uri=https://birc.leedong.work/notify&scope=notify&state=NO_STATE
 '''
 
 @login_required
