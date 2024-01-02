@@ -11,7 +11,7 @@ from ..module import encrypt
 def notify_send(user_id, isFind):
     data = {}
     user_id = encrypt_string(user_id)
-    find_url = f'https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=CN82GQa4zPRv2vaKU8BSr0&scope=notify&state={user_id}&redirect_uri=https://iotappdjango.leedong.work/notify'
+    find_url = f'https://notify-bot.line.me/oauth/authorize?response_type=code&client_id=CN82GQa4zPRv2vaKU8BSr0&scope=notify&state={user_id}&redirect_uri=https://birc.leedong.work/notify'
     unfind_url = "https://notify-bot.line.me/"
     if(isFind):
         data = {"title":"移除通知綁定", "text":"請先登入LineNotify解除連動\n在按移除通知綁定移除資料\n若之後若要再綁定通知需重新設定"}
@@ -132,7 +132,7 @@ def getSignListByStudent(student_id):
                     layout='horizontal',
                     contents=[
                         ButtonComponent(
-                            action=URIAction(label='點擊查看', uri=f'https://iotappdjango.leedong.work/report?token={signToken}') 
+                            action=URIAction(label='點擊查看', uri=f'https://birc.leedong.work/report?token={signToken}') 
                         )
                     ]
                 )
