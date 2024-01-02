@@ -2,10 +2,9 @@
 import uuid
 import os
 import datetime
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from ..models import card, image, sign, notify
 from iotAppFinalproject import settings
@@ -41,6 +40,7 @@ def report(request):
                                                    ,"affair":sign_instance.affair})
         except: 
             return render(request, 'report.html', {'error': '發生錯誤'})
+
 def getReportUrl(request):
     if request.method == 'POST':
         toekn = request.POST.get('token')
@@ -48,7 +48,7 @@ def getReportUrl(request):
         signToken = encrypt.encrypt_string(str(sign_id))
         return HttpResponse(f'https://iotappdjango.leedong.work/report?token={signToken}', status=200, content_type='text/plain')
     return HttpResponse(f'error', status=200, content_type='text/plain')
-
+    
 
 @csrf_exempt
 def cardCheck(request):
@@ -69,7 +69,6 @@ def image_check(request):
         uploaded_file = request.FILES.get('file')
         if toekn == "p+8bwe~s_74;`?%nq}#?t7~p7_rr6qe_&###@*ky//}f^!_b=&00852!sr:sz!a":
             if(image_regonition.detect_face(uploaded_file)):
-                saveImage(uploaded_file,sign_id)
                 return HttpResponse(checkin_Out(card_id, uploaded_file), status=200, content_type='text/plain; charset=utf-8')
     return HttpResponse(f'error', status=200, content_type='text/plain')
 
@@ -99,6 +98,7 @@ def checkin_Out(card_id, uploaded_file):
                 notifyMsg += f"https://iotappdjango.leedong.work/report?token={signToken}"
         
             notify.lineNotifyMessage(token, notifyMsg)
+        saveImage(uploaded_file, sign_id)
         text = f'{sign_id},{in_Out},{student.student_id},{student.name}'
         return text
         
@@ -111,15 +111,17 @@ def saveImage(uploaded_file,sign_id):
         year = str(current_date.year)
         month = str(current_date.month).zfill(2)
         day = str(current_date.day).zfill(2)
-
+        
         # 隨機檔名
         uuid_str = str(uuid.uuid4())
         file_extension = os.path.splitext(uploaded_file.name)[1]
         random_filename = f"{uuid_str}{file_extension}"
-         # 存檔
+
+        # 存檔
         upload_path = os.path.join('images', year, month, day, random_filename)
         fs = FileSystemStorage(location=settings.MEDIA_ROOT)
         filename = fs.save(upload_path, uploaded_file)
+
         file_path = fs.url(filename)
         new_student = image(path=file_path, sign_id=int(sign_id), create_time=current_date)
         new_student.save()

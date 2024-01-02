@@ -1,5 +1,6 @@
 import secrets
 from django.db import models
+from .module import mqtt
 import datetime
 import requests
 
@@ -87,12 +88,8 @@ class card(models.Model):
         if card_count > 10:
             return "exceed the limit"
         else:
-            existing_card = card.objects.filter(card_id=newCard, student=student).first()
-            if existing_card:
-                return "already exists"
-            else:
-                card.objects.create(card_id=newCard, student_id=student, create_time=now)
-                return "success"
+            card.objects.create(card_id=newCard, student_id=student, create_time=now)
+            return "success"
     @staticmethod
     def deleteStudentCard(card_id):
         try:
@@ -139,7 +136,7 @@ class notify(models.Model):
         body = {
             "grant_type": "authorization_code",
             "code": AuthorizeCode,
-            "redirect_uri": "https://birc.leedong.work/notify",
+            "redirect_uri": "https://iotappdjango.leedong.work/notify",
             "client_id": "CN82GQa4zPRv2vaKU8BSr0",
             "client_secret": "SaYaAwYuL6XuAZZUTj5hghCEHlkAS25uDYH4EUvmI6w",
         }
@@ -213,7 +210,9 @@ class card_captcha(models.Model):
         latest_card_captcha = card_captcha.objects.filter(student_id=student_id, code_value=code).order_by('-create_time').first()
         if latest_card_captcha:
             if latest_card_captcha.expiry_time > now:
-                return "驗證成功"
+                mqtt.send_mqtt_message(student_id , 'card/registerMode')
+                print("mqtt")
+                return "驗證成功 !! \n請在15秒內在裝置上\n感應您要新增的卡片"
             else:
                 return "驗證碼過期"
         else:
