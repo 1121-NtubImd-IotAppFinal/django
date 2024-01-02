@@ -41,6 +41,25 @@ def report(request):
                                                    ,"affair":sign_instance.affair})
         except: 
             return render(request, 'report.html', {'error': '發生錯誤'})
+def getReportUrl(request):
+    if request.method == 'POST':
+        toekn = request.POST.get('token')
+        sign_id = request.POST.get('sign_id')
+        signToken = encrypt.encrypt_string(str(sign_id))
+        return HttpResponse(f'https://iotappdjango.leedong.work/report?token={signToken}', status=200, content_type='text/plain')
+    return HttpResponse(f'error', status=200, content_type='text/plain')
+
+
+@csrf_exempt
+def cardCheck(request):
+    if request.method == 'POST':
+        card_id = request.POST.get('card_id')
+        print(card_id)
+        student = card.getStudentByCardId(card_id)
+        if student == None:
+            return HttpResponse(f'No', status=200, content_type='text/plain')
+        else:
+            return HttpResponse(f'Yes', status=200, content_type='text/plain')
 
 @csrf_exempt
 def image_check(request):
@@ -50,10 +69,11 @@ def image_check(request):
         uploaded_file = request.FILES.get('file')
         if toekn == "p+8bwe~s_74;`?%nq}#?t7~p7_rr6qe_&###@*ky//}f^!_b=&00852!sr:sz!a":
             if(image_regonition.detect_face(uploaded_file)):
-                return HttpResponse(checkin_Out(card_id), status=200, content_type='text/plain; charset=utf-8')
+                saveImage(uploaded_file,sign_id)
+                return HttpResponse(checkin_Out(card_id, uploaded_file), status=200, content_type='text/plain; charset=utf-8')
     return HttpResponse(f'error', status=200, content_type='text/plain')
 
-def checkin_Out(card_id):
+def checkin_Out(card_id, uploaded_file):
     student = card.getStudentByCardId(card_id)
     if student == None:
         return None
@@ -76,7 +96,7 @@ def checkin_Out(card_id):
                 notifyMsg += f"時數經計算為：{hours}小時。"
                 notifyMsg += f"==================\n"
                 notifyMsg += f"請至以下連結填寫今日進度\n"
-                notifyMsg += f"https://birc.leedong.work/report?token={signToken}"
+                notifyMsg += f"https://iotappdjango.leedong.work/report?token={signToken}"
         
             notify.lineNotifyMessage(token, notifyMsg)
         text = f'{sign_id},{in_Out},{student.student_id},{student.name}'
@@ -85,31 +105,22 @@ def checkin_Out(card_id):
                
 
 @csrf_exempt
-def saveImage(request):
-    if request.method == 'POST':
-        sign = request.POST.get('number')
-        uploaded_file = request.FILES.get('file')
-        if uploaded_file:                
-            current_date = datetime.datetime.now()
-            year = str(current_date.year)
-            month = str(current_date.month).zfill(2)
-            day = str(current_date.day).zfill(2)
-            
-            # 隨機檔名
-            uuid_str = str(uuid.uuid4())
-            file_extension = os.path.splitext(uploaded_file.name)[1]
-            random_filename = f"{uuid_str}{file_extension}"
+def saveImage(uploaded_file,sign_id):
+    if uploaded_file:                
+        current_date = datetime.datetime.now()
+        year = str(current_date.year)
+        month = str(current_date.month).zfill(2)
+        day = str(current_date.day).zfill(2)
 
-            # 存檔
-            upload_path = os.path.join('images', year, month, day, random_filename)
-            fs = FileSystemStorage(location=settings.MEDIA_ROOT)
-            filename = fs.save(upload_path, uploaded_file)
-
-            file_path = fs.url(filename)
-            new_student = image(path=file_path, sign_id=int(sign), create_time=current_date)
-            new_student.save()
-            print("File saved at:", file_path)
-
-        return JsonResponse({'message': 'Data received successfully'}, status=200)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
+        # 隨機檔名
+        uuid_str = str(uuid.uuid4())
+        file_extension = os.path.splitext(uploaded_file.name)[1]
+        random_filename = f"{uuid_str}{file_extension}"
+         # 存檔
+        upload_path = os.path.join('images', year, month, day, random_filename)
+        fs = FileSystemStorage(location=settings.MEDIA_ROOT)
+        filename = fs.save(upload_path, uploaded_file)
+        file_path = fs.url(filename)
+        new_student = image(path=file_path, sign_id=int(sign_id), create_time=current_date)
+        new_student.save()
+        print("File saved at:", file_path)
