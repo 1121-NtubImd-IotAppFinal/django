@@ -27,7 +27,7 @@ def manager(request):
         missing_hours = f'{(X - Y):.2f}' if (Y<X) else 0.00
         student_instance.X = f'{X:.2f}'
         student_instance.Y = f'{Y:.2f}'if Y is not None else 0.00
-        student_instance.missing_hours = f'{missing_hours:.2f}'
+        student_instance.missing_hours = missing_hours
 
     students_on_page = sorted(students_on_page, key=lambda student: float(student.Y) if student.Y is not None else 0, reverse=True)
 
