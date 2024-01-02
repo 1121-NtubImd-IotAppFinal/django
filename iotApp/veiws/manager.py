@@ -29,6 +29,6 @@ def manager(request):
         student_instance.Y = f'{Y:.2f}'if Y is not None else 0
         student_instance.missing_hours = missing_hours
 
-    students_on_page = sorted(students_on_page, key=lambda student: student.missing_hours, reverse=True)
+    students_on_page = sorted(students_on_page, key=lambda student: float(student.Y) if student.Y is not None else 0, reverse=True)
 
     return render(request, 'leader/manager.html', {'students': students_on_page})
