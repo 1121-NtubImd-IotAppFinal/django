@@ -1,0 +1,49 @@
+<!-- 在people.html中 -->
+{% extends 'leader/base.html' %}
+{% block content %}
+{% load static %}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/manager.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>學生資訊</h1>
+    
+        <form method="post" action="{% url 'people' %}">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>學號姓名</th>
+                        <th>註冊日期</th>
+                        <th>卡片ID</th>
+                        <th>刪除學生</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>{{ student.student_id }} {{ student.name }}</td>
+                            <td>{{ student.create_time }}</td>
+                            <td>
+                                {% if student.card_set.all %}
+                                    {% for card in student.card_set.all %}
+                                        {{ card.card_id }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    No Card
+                                {% endif %}
+                            </td>
+                            <td>
+                                <button type="submit" name="delete_student" value="{{ student.student_id }}">刪除</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+</body>
+</html>
+{% endblock %}

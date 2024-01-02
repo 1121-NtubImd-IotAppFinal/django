@@ -19,7 +19,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from iotApp.veiws import linebot,leader,searchHour,notify,sign, later, hours, manager, set_time
+from iotApp.veiws import linebot,leader,searchHour,notify,sign, later, hours, \
+    manager, set_time,people,card
 
 urlpatterns = [
     path('linebot', linebot.line_bot_webhook),
@@ -38,5 +39,9 @@ urlpatterns = [
     path('reportUrl', sign.getReportUrl),
     path('registerCard', linebot.registerCard),
     path('set_time', set_time.set_time, name='set_time'),
-    path('manager', manager.manager, name='manager')
+    path('manager', manager.manager, name='manager'),
+    path('people', people.people, name='people'),
+    path('cardman', card.cardman, name='cardman'),   
+    path('card/delete/<str:card_id>/', card.delete_card, name='delete_card'),
+    path('delete_student/<str:student_id>/', people.delete_student, name='delete_student')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
