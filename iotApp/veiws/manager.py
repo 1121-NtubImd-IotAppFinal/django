@@ -24,7 +24,7 @@ def manager(request):
         Y = sign.objects.filter(student=student_instance).aggregate(total_hours=Sum('hours'))['total_hours']
         missing_hours = 0
         if(Y!=None and X!=None):
-            missing_hours = f'{(X - Y):.2f}' if (Y-X)>=0 else 0
+            missing_hours = f'{(X - Y):.2f}' if (Y-X)<0 else 0
         student_instance.X = f'{X:.2f}'
         student_instance.Y = f'{Y:.2f}'if Y is not None else 0
         student_instance.missing_hours = missing_hours
